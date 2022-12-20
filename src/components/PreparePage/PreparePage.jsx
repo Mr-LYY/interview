@@ -2,9 +2,16 @@ import React, { useEffect, useState } from "react";
 import Typography from "@mui/material/Typography";
 import { useNavigate } from "react-router-dom";
 import { PageLayout } from "../PageLayout/PageLayout";
-import { BASE_URL, dispatchIsAuthorizedEvent } from "../../utils";
+import { dispatchIsAuthorizedEvent, makeCustomFetch } from "../../utils";
 import Box from "@mui/material/Box";
 import { Card } from "@mui/material";
+
+import { Swiper, SwiperSlide } from "swiper/react";
+
+import "swiper/css";
+import "swiper/css/navigation";
+
+import { Pagination } from "swiper";
 
 export const PreparePage = () => {
   const [description, setDescription] = useState("");
@@ -14,15 +21,7 @@ export const PreparePage = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    fetch(`${BASE_URL}/api/topics`, {
-      method: "GET",
-      headers: new Headers({
-        "ngrok-skip-browser-warning": "true",
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
-      }),
-    })
+    makeCustomFetch("topics")
       .then((r) => {
         if (r.status === 401) {
           dispatchIsAuthorizedEvent(false);
@@ -33,7 +32,6 @@ export const PreparePage = () => {
       .then((res) => {
         setDescription(res.description);
         setTopics(res.data);
-        console.log(res.data);
       })
       .catch((e) => console.log(e))
       .finally(() => setIsLoading(false));
@@ -47,35 +45,57 @@ export const PreparePage = () => {
     <PageLayout
       header={"What is the interview going to be about"}
       buttonCallback={nextPageHandler}
-      buttonText={"Start the interview"}
+      buttonText={"Start interview"}
       isLoading={isLoading}
     >
-      <Box display={"flex"} overflow={"hidden"} width={topics?.length * 320}>
-        {topics.map((topic) => {
-          const { id, description, name, questions } = topic;
-          return (
-            <Card
-              sx={{ p: 2, width: 300, height: 150, mr: 2 }}
-              variant={"outlined"}
-              key={id}
-            >
-              <Typography fontWeight={700} color={"cornflowerblue"}>
-                {name}
-              </Typography>
-              <Typography sx={{ opacity: 0.5 }}>
-                Quantity of questions: {questions}
-              </Typography>
-              <Typography
-                height={100}
-                overflow={"hidden"}
-                width={"100%"}
-                pt={1}
-              >
-                {description}
-              </Typography>
-            </Card>
-          );
-        })}
+      <Box
+        sx={{ cursor: "grab", userSelect: "none" }}
+        overflow={"hidden"}
+        position={"relative"}
+        height={200}
+      >
+        <Swiper
+          slidesPerView={4}
+          spaceBetween={200}
+          pagination={{
+            clickable: true,
+          }}
+          modules={[Pagination]}
+          className="mySwiper"
+        >
+          {!!topics?.length &&
+            topics.map((topic) => {
+              const { id, description, name, questions } = topic;
+              return (
+                <SwiperSlide key={id} style={{ padding: 4 }}>
+                  <Card
+                    sx={{
+                      p: 2,
+                      width: 280,
+                      height: 150,
+                      mr: 1,
+                      boxShadow: "0 0 5px 5px #6495ed12",
+                    }}
+                  >
+                    <Typography fontWeight={700} color={"cornflowerblue"}>
+                      {name}
+                    </Typography>
+                    <Typography sx={{ opacity: 0.5 }}>
+                      Quantity of questions: {questions}
+                    </Typography>
+                    <Typography
+                      height={100}
+                      overflow={"hidden"}
+                      width={"100%"}
+                      pt={1}
+                    >
+                      {description}
+                    </Typography>
+                  </Card>
+                </SwiperSlide>
+              );
+            })}
+        </Swiper>
       </Box>
       <Typography color={"cornflowerblue"} mt={4} mb={1} fontWeight={700}>
         Common description:

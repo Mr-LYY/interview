@@ -64,7 +64,7 @@ export const Appbar = () => {
       <AppBar position="static">
         <Toolbar>
           <Typography component="div" sx={{ flexGrow: 1 }}>
-            Siren interview platform (v0.0.1)
+            Siren interview platform (v0.1.1)
           </Typography>
           {isAuthorized ? (
             <Box

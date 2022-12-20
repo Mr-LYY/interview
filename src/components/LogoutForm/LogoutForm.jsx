@@ -3,23 +3,25 @@ import Typography from "@mui/material/Typography";
 import { Avatar } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import { BASE_URL } from "../../utils";
+import { BASE_URL, dispatchIsAuthorizedEvent } from "../../utils";
+import { useNavigate } from "react-router-dom";
 
 export const LogoutForm = () => {
+  const navigate = useNavigate();
   const handleLogout = () => {
     fetch(`${BASE_URL}/api/tokens`, {
-      method: "POST",
+      method: "DELETE",
       headers: new Headers({
         "ngrok-skip-browser-warning": "true",
         "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
       }),
     })
-      .then((r) => r.ok && r.json())
-      .then(({ data }) => {
-        if (data?.token) {
-          sessionStorage.setItem("token", data?.token);
-        } else {
-          throw new Error("No token!");
+      .then((r) => {
+        if (r.ok) {
+          dispatchIsAuthorizedEvent(false);
+          navigate("/");
         }
       })
       .catch((e) => console.log(e));

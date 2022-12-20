@@ -10,3 +10,15 @@ export const dispatchIsAuthorizedEvent = (isAuthorized = false) => {
     })
   );
 };
+
+export const makeCustomFetch = (url, method = "GET", data) =>
+  fetch(`${BASE_URL}/api/${url}`, {
+    method,
+    body: data ? JSON.stringify(data) : undefined,
+    headers: new Headers({
+      "ngrok-skip-browser-warning": "true",
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+    }),
+  });

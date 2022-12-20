@@ -1,32 +1,19 @@
 import React, { useEffect, useState } from "react";
 import Typography from "@mui/material/Typography";
-// import { useNavigate } from "react-router-dom";
 import { PageLayout } from "../PageLayout/PageLayout";
 import { SmileAnswers } from "../SmileAnswers/SmileAnswers";
-import { BASE_URL, dispatchIsAuthorizedEvent } from "../../utils";
+import { dispatchIsAuthorizedEvent, makeCustomFetch } from "../../utils";
 import { Divider } from "@mui/material";
 
 export const QuestionsPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [type, setType] = useState(null);
+  const [score, setScore] = useState(null);
   const [questionData, setQuestionData] = useState({});
-  // const navigate = useNavigate();
-  //
-  // const nextPageHandler = () => {
-  //   navigate("/questions");
-  // };
 
-  useEffect(() => {
+  const nextQuestionHandler = () => {
     setIsLoading(true);
-    fetch(`${BASE_URL}/api/questions/next`, {
-      method: "GET",
-      headers: new Headers({
-        "ngrok-skip-browser-warning": "true",
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
-      }),
-    })
+    makeCustomFetch("questions/next")
       .then((r) => {
         if (r.status === 401) {
           dispatchIsAuthorizedEvent(false);
@@ -40,14 +27,29 @@ export const QuestionsPage = () => {
       })
       .catch((e) => console.log(e))
       .finally(() => setIsLoading(false));
+  };
+
+  useEffect(() => {
+    nextQuestionHandler();
   }, []);
+
+  const topicAnswerHandler = () => {
+    makeCustomFetch(`topics/${questionData?.id}/score`, "POST", { score })
+      .then((r) => r.ok && nextQuestionHandler())
+      .catch((e) => console.log(e));
+  };
+
+  useEffect(() => {
+    console.log(score);
+  }, [score]);
 
   return (
     <PageLayout
       header={"Question's section"}
-      buttonCallback={null}
+      buttonCallback={type === "topic" ? topicAnswerHandler : null}
       buttonText={"Next question"}
       isLoading={isLoading}
+      disabled={!score}
     >
       <Typography variant={"caption"} textTransform={"capitalize"}>
         {type}
@@ -57,7 +59,7 @@ export const QuestionsPage = () => {
       <Typography variant={"caption"}>
         <b>Description</b>: {questionData?.description}
       </Typography>
-      <SmileAnswers />
+      <SmileAnswers setScore={setScore} />
     </PageLayout>
   );
 };

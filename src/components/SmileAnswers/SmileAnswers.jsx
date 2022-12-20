@@ -11,6 +11,7 @@ import Typography from "@mui/material/Typography";
 const AnswerButton = ({
   children,
   name,
+  value,
   onClick,
   onMouseOver,
   onMouseLeave,
@@ -21,6 +22,7 @@ const AnswerButton = ({
       onClick={onClick}
       onMouseOver={onMouseOver}
       onMouseLeave={onMouseLeave}
+      value={value}
       name={name}
       sx={{
         m: 2,
@@ -38,6 +40,7 @@ const AnswerButton = ({
 const answersArrNames = [
   {
     text: "Very bad",
+    value: "1",
     icon: (
       <SentimentVeryDissatisfiedRoundedIcon
         sx={{ width: 60, height: 60 }}
@@ -47,6 +50,7 @@ const answersArrNames = [
   },
   {
     text: "Bad",
+    value: "2",
     icon: (
       <SentimentDissatisfiedRoundedIcon
         sx={{ width: 60, height: 60 }}
@@ -56,6 +60,7 @@ const answersArrNames = [
   },
   {
     text: "Normal",
+    value: "3",
     icon: (
       <SentimentSatisfiedIcon
         sx={{ width: 60, height: 60 }}
@@ -65,6 +70,7 @@ const answersArrNames = [
   },
   {
     text: "Good",
+    value: "4",
     icon: (
       <SentimentSatisfiedAltRoundedIcon
         sx={{ width: 60, height: 60 }}
@@ -74,6 +80,7 @@ const answersArrNames = [
   },
   {
     text: "Perfect",
+    value: "5",
     icon: (
       <SentimentVerySatisfiedRoundedIcon
         sx={{ width: 60, height: 60 }}
@@ -83,7 +90,7 @@ const answersArrNames = [
   },
 ];
 
-export const SmileAnswers = () => {
+export const SmileAnswers = ({ setScore }) => {
   const [helperText, setHelperText] = useState("");
   const [backgroundColor, setBackgroundColor] = useState("");
 
@@ -93,12 +100,16 @@ export const SmileAnswers = () => {
   const onMouseLeave = useCallback(() => {
     setHelperText("");
   }, []);
-  const onClick = useCallback(({ currentTarget }) => {
-    setBackgroundColor({
-      name: currentTarget.name,
-      color: "cornflowerblue",
-    });
-  }, []);
+  const onClick = useCallback(
+    ({ currentTarget }) => {
+      setScore(currentTarget?.value);
+      setBackgroundColor({
+        name: currentTarget.name,
+        color: "cornflowerblue",
+      });
+    },
+    [setScore]
+  );
 
   return (
     <>
@@ -115,6 +126,7 @@ export const SmileAnswers = () => {
             <AnswerButton
               key={button.text}
               name={button.text}
+              value={button.value}
               onClick={onClick}
               backgroundColor={backgroundColor}
               onMouseLeave={onMouseLeave}
@@ -129,7 +141,7 @@ export const SmileAnswers = () => {
         variant={"h6"}
         sx={{
           position: "absolute",
-          bottom: 0,
+          bottom: 10,
           width: "100%",
           textAlign: "center",
         }}

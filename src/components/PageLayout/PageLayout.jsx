@@ -10,6 +10,8 @@ export const PageLayout = ({
   buttonCallback = () => false,
   buttonText = "Next",
   isLoading = false,
+  disabled = false,
+  error = false,
 }) => {
   return (
     <>
@@ -42,6 +44,8 @@ export const PageLayout = ({
         sx={{ display: "block", mt: 3, ml: "auto" }}
         variant={"contained"}
         onClick={buttonCallback}
+        color={error ? "error" : "primary"}
+        disabled={disabled}
       >
         {buttonText}
       </Button>
