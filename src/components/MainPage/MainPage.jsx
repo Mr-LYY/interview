@@ -5,6 +5,8 @@ import Box from "@mui/material/Box";
 import { AuthContext, CandidateContext } from "../../App";
 import { CandidateCard } from "../CandidateCard/CandidateCard";
 import { makeCustomFetch } from "../../utils";
+import Typography from "@mui/material/Typography";
+import LockIcon from "@mui/icons-material/Lock";
 
 export const MainPage = () => {
   const { isAuthorized, setIsAuthorized } = useContext(AuthContext);
@@ -31,7 +33,7 @@ export const MainPage = () => {
       .then(({ data }) => setCandidates(data))
       .catch((e) => console.log(e))
       .finally(() => setIsLoading(false));
-  }, []);
+  }, [isAuthorized]);
 
   return (
     <PageLayout
@@ -42,7 +44,7 @@ export const MainPage = () => {
       disabled={!isAuthorized || !candidateId}
     >
       <Box display={"flex"} flexWrap={"wrap"}>
-        {!!candidates?.length &&
+        {!!candidates?.length && isAuthorized ? (
           candidates.map((candidate) => {
             const { id, name, position, stack } = candidate;
 
@@ -55,7 +57,27 @@ export const MainPage = () => {
                 stack={stack}
               />
             );
-          })}
+          })
+        ) : (
+          <Box
+            width={"100%"}
+            height={400}
+            display={"flex"}
+            flexDirection={"column"}
+            justifyContent={"center"}
+            alignItems={"center"}
+            sx={{ opacity: 0.5 }}
+          >
+            <LockIcon sx={{ width: 200, height: 200 }} color={"primary"} />
+            <Typography
+              textTransform={"uppercase"}
+              color={"primary"}
+              variant={"h4"}
+            >
+              You have to sign in
+            </Typography>
+          </Box>
+        )}
       </Box>
     </PageLayout>
   );

@@ -83,6 +83,9 @@ export const QuestionsPage = () => {
     } else {
       clearInterval(intevalId);
       setIsWaiting(false);
+      if (type === "result") {
+        resultHandler();
+      }
     }
 
     return () => clearInterval(intevalId);
