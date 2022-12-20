@@ -18,6 +18,7 @@ export const PageLayout = ({
       </Typography>
       <Box
         p={4}
+        position={"relative"}
         sx={{ backgroundColor: "white", overflow: "hidden" }}
         boxShadow={"0 0 5px 5px #9eb6ff12"}
         borderRadius={2}

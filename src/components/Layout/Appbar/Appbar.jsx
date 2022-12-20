@@ -38,15 +38,14 @@ export const Appbar = () => {
 
     setIsDrawerOpen((prevState) => !prevState);
   };
-  console.log(isAuthorized);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Drawer anchor={"right"} open={isDrawerOpen} onClose={toggleDrawer}>
         <Box sx={{ width: 400, padding: "8px 16px" }}>
           <Box display={"flex"} alignItems={"center"}>
-            <Typography variant={"h6"} paddingLeft={2}>
-              Авторизация
+            <Typography color={"cornflowerblue"} variant={"h6"} paddingLeft={2}>
+              {isAuthorized ? "Personal info" : "Sign in"}
             </Typography>
             <IconButton
               size="large"

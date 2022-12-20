@@ -4,12 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { PageLayout } from "../PageLayout/PageLayout";
 import { BASE_URL, dispatchIsAuthorizedEvent } from "../../utils";
 import Box from "@mui/material/Box";
-import { Card, CircularProgress } from "@mui/material";
+import { Card } from "@mui/material";
 
 export const PreparePage = () => {
   const [description, setDescription] = useState("");
   const [topics, setTopics] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,8 +19,8 @@ export const PreparePage = () => {
       headers: new Headers({
         "ngrok-skip-browser-warning": "true",
         "Content-Type": "application/json",
-        ["Accept"]: "application/json",
-        ["Authorization"]: `Bearer ${sessionStorage.getItem("token")}`,
+        Accept: "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
       }),
     })
       .then((r) => {
