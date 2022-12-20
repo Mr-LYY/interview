@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Typography from "@mui/material/Typography";
 import { PageLayout } from "../PageLayout/PageLayout";
 import { SmileAnswers } from "../SmileAnswers/SmileAnswers";
-import { dispatchIsAuthorizedEvent, makeCustomFetch } from "../../utils";
+import { makeCustomFetch } from "../../utils";
 import { Divider } from "@mui/material";
+import { AuthContext } from "../../App";
 
 export const QuestionsPage = () => {
+  const { setIsAuthorized } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(false);
   const [type, setType] = useState(null);
   const [score, setScore] = useState(null);
@@ -16,7 +18,7 @@ export const QuestionsPage = () => {
     makeCustomFetch("questions/next")
       .then((r) => {
         if (r.status === 401) {
-          dispatchIsAuthorizedEvent(false);
+          setIsAuthorized(false);
         }
 
         return r.ok && r.json();
@@ -31,7 +33,7 @@ export const QuestionsPage = () => {
 
   useEffect(() => {
     nextQuestionHandler();
-  }, []);
+  }, [setIsAuthorized]);
 
   const topicAnswerHandler = () => {
     makeCustomFetch(`topics/${questionData?.id}/score`, "POST", { score })

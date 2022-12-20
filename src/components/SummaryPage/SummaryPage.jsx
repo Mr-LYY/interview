@@ -1,26 +1,36 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Typography from "@mui/material/Typography";
 import { useNavigate } from "react-router-dom";
 import { PageLayout } from "../PageLayout/PageLayout";
-import { dispatchIsAuthorizedEvent, makeCustomFetch } from "../../utils";
-import Box from "@mui/material/Box";
+import { makeCustomFetch } from "../../utils";
+import { AuthContext } from "../../App";
+import { BigChart } from "./charts/BigChart/BigChart";
+import { WireChart } from "./charts/WireChart/WireChart";
+import { Swiper, SwiperSlide } from "swiper/react";
+
+import { Navigation } from "swiper";
 
 export const SummaryPage = () => {
+  const { setIsAuthorized } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(false);
+  const [allChartsData, setAllChartsData] = useState(null);
+  const [summary, setSummary] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
     setIsLoading(true);
-    makeCustomFetch("topics")
+    makeCustomFetch("summary")
       .then((r) => {
         if (r.status === 401) {
-          dispatchIsAuthorizedEvent(false);
+          sessionStorage.removeItem("token");
+          setIsAuthorized(false);
         }
 
         return r.ok && r.json();
       })
       .then((res) => {
-        console.log(res);
+        setAllChartsData(res?.scores);
+        setSummary(res?.summary);
       })
       .catch((e) => console.log(e))
       .finally(() => setIsLoading(false));
@@ -32,20 +42,39 @@ export const SummaryPage = () => {
 
   return (
     <PageLayout
-      header={"finish interview"}
+      header={"Summary page"}
       buttonCallback={nextPageHandler}
-      buttonText={"Start interview"}
+      buttonText={"Finish interview"}
       isLoading={isLoading}
       error
     >
-      <Box
-        sx={{ cursor: "grab", userSelect: "none" }}
-        overflow={"hidden"}
-        position={"relative"}
-        height={200}
-      >
-        <Typography>Content</Typography>
-      </Box>
+      <Swiper navigation={true} modules={[Navigation]} className="mySwiper">
+        <SwiperSlide>
+          <Typography variant={"h6"} align={"center"} mb={4}>
+            Big overall chart
+          </Typography>
+          <BigChart data={allChartsData} />
+        </SwiperSlide>
+        <SwiperSlide style={{ overflow: "hidden" }}>
+          <Typography variant={"h6"} align={"center"} mb={4}>
+            Wire overall slice
+          </Typography>
+          <WireChart data={allChartsData} />
+        </SwiperSlide>
+        <SwiperSlide
+          style={{
+            overflow: "hidden",
+            minHeight: 400,
+          }}
+        >
+          <Typography variant={"h6"} align={"center"} mb={4}>
+            Candidate summary
+          </Typography>
+          <Typography maxWidth={800} margin={"16px auto"}>
+            {summary}
+          </Typography>
+        </SwiperSlide>
+      </Swiper>
     </PageLayout>
   );
 };

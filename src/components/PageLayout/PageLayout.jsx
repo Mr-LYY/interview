@@ -15,7 +15,13 @@ export const PageLayout = ({
 }) => {
   return (
     <>
-      <Typography color={"cornflowerblue"} mt={10} mb={1} variant={"h4"}>
+      <Typography
+        fontFamily={"Times New Roman"}
+        color={"cornflowerblue"}
+        mt={10}
+        mb={1}
+        variant={"h4"}
+      >
         {header}
       </Typography>
       <Box

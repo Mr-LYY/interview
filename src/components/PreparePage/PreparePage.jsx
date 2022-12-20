@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Typography from "@mui/material/Typography";
 import { useNavigate } from "react-router-dom";
 import { PageLayout } from "../PageLayout/PageLayout";
-import { dispatchIsAuthorizedEvent, makeCustomFetch } from "../../utils";
+import { makeCustomFetch } from "../../utils";
 import Box from "@mui/material/Box";
 import { Card } from "@mui/material";
 
@@ -12,8 +12,10 @@ import "swiper/css";
 import "swiper/css/navigation";
 
 import { Pagination } from "swiper";
+import { AuthContext } from "../../App";
 
 export const PreparePage = () => {
+  const { setIsAuthorized } = useContext(AuthContext);
   const [description, setDescription] = useState("");
   const [topics, setTopics] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -24,7 +26,8 @@ export const PreparePage = () => {
     makeCustomFetch("topics")
       .then((r) => {
         if (r.status === 401) {
-          dispatchIsAuthorizedEvent(false);
+          sessionStorage.removeItem("token");
+          setIsAuthorized(false);
         }
 
         return r.ok && r.json();
@@ -35,7 +38,7 @@ export const PreparePage = () => {
       })
       .catch((e) => console.log(e))
       .finally(() => setIsLoading(false));
-  }, []);
+  }, [setIsAuthorized]);
 
   const nextPageHandler = () => {
     navigate("/questions");

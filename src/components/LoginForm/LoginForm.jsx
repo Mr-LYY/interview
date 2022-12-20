@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { TextField } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import { BASE_URL, dispatchIsAuthorizedEvent } from "../../utils";
+import { BASE_URL } from "../../utils";
+import { AuthContext } from "../../App";
 
 export const LoginForm = () => {
   const {
@@ -12,6 +13,7 @@ export const LoginForm = () => {
     resetField,
     formState: { errors },
   } = useForm();
+  const { setIsAuthorized } = useContext(AuthContext);
 
   const resetHandler = () => {
     resetField("email");
@@ -31,7 +33,7 @@ export const LoginForm = () => {
       .then(({ data }) => {
         if (data?.token) {
           sessionStorage.setItem("token", data?.token);
-          dispatchIsAuthorizedEvent(true);
+          setIsAuthorized(true);
         } else {
           throw new Error("No token!");
         }

@@ -1,13 +1,16 @@
-import React from "react";
+import React, { useContext } from "react";
 import Typography from "@mui/material/Typography";
 import { Avatar } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import { BASE_URL, dispatchIsAuthorizedEvent } from "../../utils";
+import { BASE_URL } from "../../utils";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../App";
 
 export const LogoutForm = () => {
   const navigate = useNavigate();
+  const { setIsAuthorized } = useContext(AuthContext);
+
   const handleLogout = () => {
     fetch(`${BASE_URL}/api/tokens`, {
       method: "DELETE",
@@ -19,8 +22,14 @@ export const LogoutForm = () => {
       }),
     })
       .then((r) => {
+        if (r.status === 401) {
+          sessionStorage.removeItem("token");
+          setIsAuthorized(false);
+        }
+
         if (r.ok) {
-          dispatchIsAuthorizedEvent(false);
+          sessionStorage.removeItem("token");
+          setIsAuthorized(false);
           navigate("/");
         }
       })

@@ -43,7 +43,7 @@ const answersArrNames = [
     value: "1",
     icon: (
       <SentimentVeryDissatisfiedRoundedIcon
-        sx={{ width: 60, height: 60 }}
+        sx={{ width: 60, height: 60, fill: "cornflowerblue" }}
         color={"primary"}
       />
     ),
@@ -53,7 +53,7 @@ const answersArrNames = [
     value: "2",
     icon: (
       <SentimentDissatisfiedRoundedIcon
-        sx={{ width: 60, height: 60 }}
+        sx={{ width: 60, height: 60, fill: "cornflowerblue" }}
         color={"primary"}
       />
     ),
@@ -63,7 +63,7 @@ const answersArrNames = [
     value: "3",
     icon: (
       <SentimentSatisfiedIcon
-        sx={{ width: 60, height: 60 }}
+        sx={{ width: 60, height: 60, fill: "cornflowerblue" }}
         color={"primary"}
       />
     ),
@@ -73,7 +73,7 @@ const answersArrNames = [
     value: "4",
     icon: (
       <SentimentSatisfiedAltRoundedIcon
-        sx={{ width: 60, height: 60 }}
+        sx={{ width: 60, height: 60, fill: "cornflowerblue" }}
         color={"primary"}
       />
     ),
@@ -83,8 +83,7 @@ const answersArrNames = [
     value: "5",
     icon: (
       <SentimentVerySatisfiedRoundedIcon
-        sx={{ width: 60, height: 60 }}
-        color={"primary"}
+        sx={{ width: 60, height: 60, fill: "cornflowerblue" }}
       />
     ),
   },
@@ -144,6 +143,7 @@ export const SmileAnswers = ({ setScore }) => {
           bottom: 10,
           width: "100%",
           textAlign: "center",
+          color: "#44444460",
         }}
       >
         {helperText}

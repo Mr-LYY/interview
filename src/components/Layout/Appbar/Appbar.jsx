@@ -9,24 +9,20 @@ import { Avatar, Drawer } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { LoginForm } from "../../LoginForm/LoginForm";
 import { LogoutForm } from "../../LogoutForm/LogoutForm";
-import { useEffect } from "react";
-import { AUTHORIZATION_EVENT } from "../../../utils";
+import { useContext, useEffect } from "react";
+import { NavLink } from "react-router-dom";
+import { SirenLogo } from "../../SirenLogo";
+import { AuthContext } from "../../../App";
 
 export const Appbar = () => {
+  const { isAuthorized, setIsAuthorized } = useContext(AuthContext);
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
-  const [isAuthorized, setIsAuthorized] = React.useState(true);
 
   useEffect(() => {
-    const authorizationHandler = ({ detail }) => {
-      setIsAuthorized(detail?.isAuthorized);
-      setIsDrawerOpen(!detail?.isAuthorized);
-    };
-
-    document.addEventListener(AUTHORIZATION_EVENT, authorizationHandler);
-
-    return () =>
-      document.removeEventListener(AUTHORIZATION_EVENT, authorizationHandler);
-  }, []);
+    if (!sessionStorage.getItem("token")) {
+      setIsAuthorized(false);
+    }
+  }, [setIsAuthorized]);
 
   const toggleDrawer = (event) => {
     if (
@@ -63,12 +59,14 @@ export const Appbar = () => {
       </Drawer>
       <AppBar position="static">
         <Toolbar>
-          <Typography component="div" sx={{ flexGrow: 1 }}>
-            Siren interview platform (v0.1.1)
-          </Typography>
+          <NavLink to={"/"} style={{ textDecoration: "none", color: "white" }}>
+            <Box display={"flex"} alignItems={"center"}>
+              <SirenLogo />
+            </Box>
+          </NavLink>
           {isAuthorized ? (
             <Box
-              style={{ cursor: "pointer" }}
+              style={{ cursor: "pointer", marginLeft: "auto" }}
               onClick={toggleDrawer}
               alignItems={"center"}
               display={"flex"}
@@ -77,7 +75,11 @@ export const Appbar = () => {
               <Avatar src={""} />
             </Box>
           ) : (
-            <Button onClick={toggleDrawer} color="inherit">
+            <Button
+              style={{ marginLeft: "auto" }}
+              onClick={toggleDrawer}
+              color="inherit"
+            >
               Login
             </Button>
           )}
