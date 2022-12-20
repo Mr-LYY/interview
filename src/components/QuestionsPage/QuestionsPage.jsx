@@ -4,10 +4,12 @@ import { PageLayout } from "../PageLayout/PageLayout";
 import { SmileAnswers } from "../SmileAnswers/SmileAnswers";
 import { makeCustomFetch } from "../../utils";
 import { Divider } from "@mui/material";
-import { AuthContext } from "../../App";
+import { AuthContext, CandidateContext } from "../../App";
+import { Timer } from "../Timer/Timer";
 
 export const QuestionsPage = () => {
   const { setIsAuthorized } = useContext(AuthContext);
+  const { candidateId } = useContext(CandidateContext);
   const [isLoading, setIsLoading] = useState(false);
   const [type, setType] = useState(null);
   const [score, setScore] = useState(null);
@@ -15,7 +17,7 @@ export const QuestionsPage = () => {
 
   const nextQuestionHandler = () => {
     setIsLoading(true);
-    makeCustomFetch("questions/next")
+    makeCustomFetch(`candidates/${candidateId}/questions/next`)
       .then((r) => {
         if (r.status === 401) {
           setIsAuthorized(false);
@@ -26,6 +28,7 @@ export const QuestionsPage = () => {
       .then((data) => {
         setQuestionData(data.data);
         setType(data.type);
+        setScore(null);
       })
       .catch((e) => console.log(e))
       .finally(() => setIsLoading(false));
@@ -36,9 +39,36 @@ export const QuestionsPage = () => {
   }, [setIsAuthorized]);
 
   const topicAnswerHandler = () => {
-    makeCustomFetch(`topics/${questionData?.id}/score`, "POST", { score })
+    makeCustomFetch(
+      `candidates/${candidateId}/topics/${questionData?.id}/score`,
+      "POST",
+      { score }
+    )
       .then((r) => r.ok && nextQuestionHandler())
       .catch((e) => console.log(e));
+  };
+
+  const questionAnswerHandler = () => {
+    makeCustomFetch(
+      `candidates/${candidateId}/questions/${questionData?.id}/score`,
+      "POST",
+      { score }
+    )
+      .then((r) => r.ok && nextQuestionHandler())
+      .catch((e) => console.log(e));
+  };
+
+  const requestSwitchHandler = (type) => {
+    switch (type) {
+      case "topic":
+        return topicAnswerHandler;
+      case "result":
+        return questionAnswerHandler;
+      case "question":
+        return questionAnswerHandler;
+      case "pending":
+        return questionAnswerHandler;
+    }
   };
 
   useEffect(() => {
@@ -48,7 +78,9 @@ export const QuestionsPage = () => {
   return (
     <PageLayout
       header={"Question's section"}
-      buttonCallback={type === "topic" ? topicAnswerHandler : null}
+      buttonCallback={
+        type === "topic" ? topicAnswerHandler : questionAnswerHandler
+      }
       buttonText={"Next question"}
       isLoading={isLoading}
       disabled={!score}
@@ -61,6 +93,7 @@ export const QuestionsPage = () => {
       <Typography variant={"caption"}>
         <b>Description</b>: {questionData?.description}
       </Typography>
+      <Timer totalTime={questionData?.time} />
       <SmileAnswers setScore={setScore} />
     </PageLayout>
   );

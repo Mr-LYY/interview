@@ -12,10 +12,11 @@ import "swiper/css";
 import "swiper/css/navigation";
 
 import { Pagination } from "swiper";
-import { AuthContext } from "../../App";
+import { AuthContext, CandidateContext } from "../../App";
 
 export const PreparePage = () => {
   const { setIsAuthorized } = useContext(AuthContext);
+  const { candidateId } = useContext(CandidateContext);
   const [description, setDescription] = useState("");
   const [topics, setTopics] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -23,7 +24,7 @@ export const PreparePage = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    makeCustomFetch("topics")
+    makeCustomFetch(`candidates/${candidateId}/topics`)
       .then((r) => {
         if (r.status === 401) {
           sessionStorage.removeItem("token");

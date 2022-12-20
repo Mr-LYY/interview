@@ -2,24 +2,23 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { PageLayout } from "../PageLayout/PageLayout";
 import Box from "@mui/material/Box";
-import { AuthContext } from "../../App";
-import { candidates, makeCustomFetch } from "../../utils";
+import { AuthContext, CandidateContext } from "../../App";
 import { CandidateCard } from "../CandidateCard/CandidateCard";
+import { makeCustomFetch } from "../../utils";
 
 export const MainPage = () => {
-  const navigate = useNavigate();
   const { isAuthorized, setIsAuthorized } = useContext(AuthContext);
-  const [isChosen, setIsChosen] = useState({ id: null });
-
-  const chooseHandler = ({ currentTarget }) => {
-    setIsChosen({ id: currentTarget.id });
-  };
+  const { candidateId } = useContext(CandidateContext);
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const [candidates, setCandidates] = useState([]);
 
   const nextPageHandler = () => {
     navigate("/prepare");
   };
 
   useEffect(() => {
+    setIsLoading(true);
     makeCustomFetch("candidates")
       .then((r) => {
         if (r.status === 401) {
@@ -29,8 +28,9 @@ export const MainPage = () => {
 
         return r.ok && r.json();
       })
-      .then((r) => console.log(r))
-      .catch((e) => console.log(e));
+      .then(({ data }) => setCandidates(data))
+      .catch((e) => console.log(e))
+      .finally(() => setIsLoading(false));
   }, []);
 
   return (
@@ -38,21 +38,19 @@ export const MainPage = () => {
       header={"Dashboard"}
       buttonCallback={nextPageHandler}
       buttonText={"Prepare for interview"}
-      disabled={!isAuthorized || !isChosen.id}
+      isLoading={isLoading}
+      disabled={!isAuthorized || !candidateId}
     >
       <Box display={"flex"} flexWrap={"wrap"}>
         {!!candidates?.length &&
           candidates.map((candidate) => {
-            const { id, name, lastname, position, stack } = candidate;
+            const { id, name, position, stack } = candidate;
 
             return (
               <CandidateCard
                 key={id}
                 id={id}
                 name={name}
-                isChosen={isChosen}
-                setIsChosen={chooseHandler}
-                lastname={lastname}
                 position={position}
                 stack={stack}
               />

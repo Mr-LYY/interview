@@ -8,8 +8,11 @@ import { SummaryPage } from "./components/SummaryPage/SummaryPage";
 import { createContext, useEffect, useState } from "react";
 
 export const AuthContext = createContext(null);
+export const CandidateContext = createContext(null);
 function App() {
   const [isAuthorized, setIsAuthorized] = useState(false);
+  const [candidateId, setCandidateId] = useState(false);
+
   useEffect(() => {
     if (sessionStorage.getItem("token")) {
       setIsAuthorized(true);
@@ -18,14 +21,16 @@ function App() {
 
   return (
     <AuthContext.Provider value={{ isAuthorized, setIsAuthorized }}>
-      <Layout header={"Siren"}>
-        <Routes>
-          <Route path="/" element={<MainPage />} />
-          <Route path="/prepare" element={<PreparePage />} />
-          <Route path="/questions" element={<QuestionsPage />} />
-          <Route path="/summary" element={<SummaryPage />} />
-        </Routes>
-      </Layout>
+      <CandidateContext.Provider value={{ candidateId, setCandidateId }}>
+        <Layout header={"Siren"}>
+          <Routes>
+            <Route path="/" element={<MainPage />} />
+            <Route path="/prepare" element={<PreparePage />} />
+            <Route path="/questions" element={<QuestionsPage />} />
+            <Route path="/summary" element={<SummaryPage />} />
+          </Routes>
+        </Layout>
+      </CandidateContext.Provider>
     </AuthContext.Provider>
   );
 }
