@@ -3,20 +3,31 @@ import Typography from "@mui/material/Typography";
 import { PageLayout } from "../PageLayout/PageLayout";
 import { SmileAnswers } from "../SmileAnswers/SmileAnswers";
 import { makeCustomFetch } from "../../utils";
-import { Divider } from "@mui/material";
+import {
+  Dialog,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Divider,
+  LinearProgress,
+} from "@mui/material";
 import { AuthContext, CandidateContext } from "../../App";
 import { Timer } from "../Timer/Timer";
+import { Circle } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 export const QuestionsPage = () => {
   const { setIsAuthorized } = useContext(AuthContext);
   const { candidateId } = useContext(CandidateContext);
   const [isLoading, setIsLoading] = useState(false);
   const [type, setType] = useState(null);
+  const [isWaiting, setIsWaiting] = useState(false);
   const [score, setScore] = useState(null);
   const [questionData, setQuestionData] = useState({});
+  const navigate = useNavigate();
 
-  const nextQuestionHandler = () => {
-    setIsLoading(true);
+  const nextQuestionHandler = (shouldLoading = true) => {
+    shouldLoading && setIsLoading(true);
     makeCustomFetch(`candidates/${candidateId}/questions/next`)
       .then((r) => {
         if (r.status === 401) {
@@ -58,29 +69,45 @@ export const QuestionsPage = () => {
       .catch((e) => console.log(e));
   };
 
+  const resultHandler = () => {
+    setIsWaiting(false);
+    navigate("/summary");
+  };
+
+  useEffect(() => {
+    let intevalId;
+    if (type === "pending") {
+      setIsWaiting(true);
+
+      intevalId = setInterval(() => nextQuestionHandler(false), 2000);
+    } else {
+      clearInterval(intevalId);
+      setIsWaiting(false);
+    }
+
+    return () => clearInterval(intevalId);
+  }, [type]);
+
   const requestSwitchHandler = (type) => {
     switch (type) {
       case "topic":
         return topicAnswerHandler;
-      case "result":
-        return questionAnswerHandler;
       case "question":
         return questionAnswerHandler;
-      case "pending":
+      case "pending": {
         return questionAnswerHandler;
+      }
+      case "result":
+        return resultHandler;
+      default:
+        return () => false;
     }
   };
-
-  useEffect(() => {
-    console.log(score);
-  }, [score]);
 
   return (
     <PageLayout
       header={"Question's section"}
-      buttonCallback={
-        type === "topic" ? topicAnswerHandler : questionAnswerHandler
-      }
+      buttonCallback={requestSwitchHandler(type)}
       buttonText={"Next question"}
       isLoading={isLoading}
       disabled={!score}
@@ -95,6 +122,15 @@ export const QuestionsPage = () => {
       </Typography>
       <Timer totalTime={questionData?.time} />
       <SmileAnswers setScore={setScore} />
+
+      <Dialog open={isWaiting}>
+        <DialogContent>
+          <DialogContentText variant={"h6"} mb={1}>
+            {"Waiting for the second reviewer"}
+          </DialogContentText>
+          <LinearProgress />
+        </DialogContent>
+      </Dialog>
     </PageLayout>
   );
 };

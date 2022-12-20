@@ -3,7 +3,7 @@ import Typography from "@mui/material/Typography";
 import { useNavigate } from "react-router-dom";
 import { PageLayout } from "../PageLayout/PageLayout";
 import { makeCustomFetch } from "../../utils";
-import { AuthContext } from "../../App";
+import { AuthContext, CandidateContext } from "../../App";
 import { BigChart } from "./charts/BigChart/BigChart";
 import { WireChart } from "./charts/WireChart/WireChart";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -12,6 +12,7 @@ import { Navigation } from "swiper";
 
 export const SummaryPage = () => {
   const { setIsAuthorized } = useContext(AuthContext);
+  const { candidateId } = useContext(CandidateContext);
   const [isLoading, setIsLoading] = useState(false);
   const [allChartsData, setAllChartsData] = useState(null);
   const [summary, setSummary] = useState("");
@@ -19,7 +20,7 @@ export const SummaryPage = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    makeCustomFetch("summary")
+    makeCustomFetch(`candidates/${candidateId}/summary`)
       .then((r) => {
         if (r.status === 401) {
           sessionStorage.removeItem("token");
