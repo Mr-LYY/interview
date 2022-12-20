@@ -3,13 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { PageLayout } from "../PageLayout/PageLayout";
 import Box from "@mui/material/Box";
 import { AuthContext } from "../../App";
-import { candidates } from "../../utils";
+import { candidates, makeCustomFetch } from "../../utils";
 import { CandidateCard } from "../CandidateCard/CandidateCard";
 
 export const MainPage = () => {
   const navigate = useNavigate();
-  const [isChosen, setIsChosen] = useState({ id: null });
   const { isAuthorized, setIsAuthorized } = useContext(AuthContext);
+  const [isChosen, setIsChosen] = useState({ id: null });
 
   const chooseHandler = ({ currentTarget }) => {
     setIsChosen({ id: currentTarget.id });
@@ -20,10 +20,18 @@ export const MainPage = () => {
   };
 
   useEffect(() => {
-    if (sessionStorage.getItem("token")) {
-      setIsAuthorized(true);
-    }
-  }, [setIsAuthorized]);
+    makeCustomFetch("candidates")
+      .then((r) => {
+        if (r.status === 401) {
+          sessionStorage.removeItem("token");
+          setIsAuthorized(false);
+        }
+
+        return r.ok && r.json();
+      })
+      .then((r) => console.log(r))
+      .catch((e) => console.log(e));
+  }, []);
 
   return (
     <PageLayout
