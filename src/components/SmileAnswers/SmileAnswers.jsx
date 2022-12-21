@@ -6,34 +6,26 @@ import SentimentSatisfiedIcon from "@mui/icons-material/SentimentSatisfied";
 import SentimentSatisfiedAltRoundedIcon from "@mui/icons-material/SentimentSatisfiedAltRounded";
 import SentimentVerySatisfiedRoundedIcon from "@mui/icons-material/SentimentVerySatisfiedRounded";
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
+import { Tooltip } from "@mui/material";
 
-const AnswerButton = ({
-  children,
-  name,
-  value,
-  onClick,
-  onMouseOver,
-  onMouseLeave,
-  backgroundColor,
-}) => {
+const AnswerButton = ({ children, name, value, onClick, backgroundColor }) => {
   return (
-    <Button
-      onClick={onClick}
-      onMouseOver={onMouseOver}
-      onMouseLeave={onMouseLeave}
-      value={value}
-      name={name}
-      sx={{
-        m: 2,
-        boxSizing: "border-box",
-        outline: `2px solid ${
-          name === backgroundColor.name && backgroundColor.color
-        }`,
-      }}
-    >
-      {children}
-    </Button>
+    <Tooltip placement={"top"} arrow title={name}>
+      <Button
+        onClick={onClick}
+        value={value}
+        name={name}
+        sx={{
+          m: 2,
+          boxSizing: "border-box",
+          outline: `2px solid ${
+            name === backgroundColor.name && backgroundColor.color
+          }`,
+        }}
+      >
+        {children}
+      </Button>
+    </Tooltip>
   );
 };
 
@@ -90,7 +82,6 @@ const answersArrNames = [
 ];
 
 export const SmileAnswers = ({ setScore, data }) => {
-  const [helperText, setHelperText] = useState("");
   const [hints, setHints] = useState([]);
   const [backgroundColor, setBackgroundColor] = useState("");
 
@@ -106,12 +97,6 @@ export const SmileAnswers = ({ setScore, data }) => {
     setHints(prepareHints(data));
   }, [data]);
 
-  const onMouseOver = useCallback(({ currentTarget }) => {
-    setHelperText(currentTarget?.name);
-  }, []);
-  const onMouseLeave = useCallback(() => {
-    setHelperText("");
-  }, []);
   const onClick = useCallback(
     ({ currentTarget }) => {
       setScore(currentTarget?.value);
@@ -141,32 +126,11 @@ export const SmileAnswers = ({ setScore, data }) => {
               value={button.value}
               onClick={onClick}
               backgroundColor={backgroundColor}
-              onMouseLeave={onMouseLeave}
-              onMouseOver={onMouseOver}
             >
               {button.icon}
             </AnswerButton>
           );
         })}
-      </Box>
-      <Box ml={8} justifyContent={"center"} display={"flex"}>
-        <Typography
-          variant={"h6"}
-          align={"center"}
-          sx={{
-            position: "absolute",
-            display: "block",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            bottom: 10,
-            width: 500,
-            textAlign: "center",
-            color: "#44444460",
-          }}
-        >
-          {helperText}
-        </Typography>
       </Box>
     </>
   );

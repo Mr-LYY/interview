@@ -46,12 +46,13 @@ export const MainPage = () => {
       <Box display={"flex"} flexWrap={"wrap"}>
         {!!candidates?.length && isAuthorized ? (
           candidates.map((candidate) => {
-            const { id, name, position, stack } = candidate;
+            const { id, name, position, stack, photo } = candidate;
 
             return (
               <CandidateCard
                 key={id}
                 id={id}
+                photo={photo}
                 name={name}
                 position={position}
                 stack={stack}
@@ -66,14 +67,10 @@ export const MainPage = () => {
             flexDirection={"column"}
             justifyContent={"center"}
             alignItems={"center"}
-            sx={{ opacity: 0.5 }}
+            sx={{ opacity: 0.3 }}
           >
-            <LockIcon sx={{ width: 200, height: 200 }} color={"primary"} />
-            <Typography
-              textTransform={"uppercase"}
-              color={"primary"}
-              variant={"h4"}
-            >
+            <LockIcon sx={{ width: 150, height: 150 }} color={"primary"} />
+            <Typography color={"primary"} variant={"h5"}>
               You have to sign in
             </Typography>
           </Box>

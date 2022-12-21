@@ -6,6 +6,7 @@ import { CircularProgress } from "@mui/material";
 
 export const PageLayout = ({
   header,
+  isOverflowY = false,
   children,
   buttonCallback = () => false,
   buttonText = "Next",
@@ -27,7 +28,11 @@ export const PageLayout = ({
       <Box
         p={4}
         position={"relative"}
-        sx={{ backgroundColor: "white", overflow: "hidden" }}
+        sx={{
+          backgroundColor: "white",
+          overflow: "hidden",
+          overflowY: isOverflowY ? "scroll" : "hidden",
+        }}
         boxShadow={"0 0 5px 5px #9eb6ff12"}
         borderRadius={2}
         height={"50vh"}

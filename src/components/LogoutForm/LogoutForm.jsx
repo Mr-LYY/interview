@@ -5,11 +5,13 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { BASE_URL } from "../../utils";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../App";
+import { AuthContext, InterviewerContext } from "../../App";
 
 export const LogoutForm = () => {
   const navigate = useNavigate();
   const { setIsAuthorized } = useContext(AuthContext);
+  const { interviewer } = useContext(InterviewerContext);
+  const { name = "Interviewer", photo = "", email = "" } = interviewer;
 
   const handleLogout = () => {
     fetch(`${BASE_URL}/api/tokens`, {
@@ -51,11 +53,23 @@ export const LogoutForm = () => {
         alignItems={"flex-end"}
         justifyContent={"space-between"}
       >
-        <Avatar variant={"square"} sx={{ width: 100, height: 100 }} src={""} />
-        <Box>
+        <Avatar
+          variant={"square"}
+          sx={{ width: 100, height: 100 }}
+          src={photo}
+        />
+        <Box display={"flex"} flexDirection={"column"} alignItems={"flex-end"}>
           <Typography align={"right"}>SirenGroup</Typography>
           <Typography sx={{ lineHeight: 1 }} variant={"h4"}>
-            Interviewer
+            {name}
+          </Typography>
+          <Typography
+            sx={{ lineHeight: 1 }}
+            align={"right"}
+            variant={"caption"}
+            mt={1}
+          >
+            {email}
           </Typography>
         </Box>
       </Box>

@@ -12,10 +12,13 @@ import { LogoutForm } from "../../LogoutForm/LogoutForm";
 import { useContext, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { SirenLogo } from "../../SirenLogo";
-import { AuthContext } from "../../../App";
+import { AuthContext, InterviewerContext } from "../../../App";
+import { makeCustomFetch } from "../../../utils";
 
 export const Appbar = () => {
   const { isAuthorized, setIsAuthorized } = useContext(AuthContext);
+  const { interviewer, setInterviewer } = useContext(InterviewerContext);
+  const { name = "Interviewer", photo = "", email = "" } = interviewer;
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
 
   useEffect(() => {
@@ -34,6 +37,15 @@ export const Appbar = () => {
 
     setIsDrawerOpen((prevState) => !prevState);
   };
+
+  useEffect(() => {
+    if (!isAuthorized) return;
+
+    makeCustomFetch("self")
+      .then((r) => r.ok && r.json())
+      .then((data) => setInterviewer(data || null))
+      .catch((e) => console.log(e));
+  }, [isAuthorized]);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -71,8 +83,8 @@ export const Appbar = () => {
               alignItems={"center"}
               display={"flex"}
             >
-              <Typography mr={1}>Interviewer</Typography>
-              <Avatar src={""} />
+              <Typography mr={1}>{name}</Typography>
+              <Avatar src={photo} />
             </Box>
           ) : (
             <Button

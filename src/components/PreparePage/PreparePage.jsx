@@ -47,14 +47,15 @@ export const PreparePage = () => {
 
   return (
     <PageLayout
+      isOverflowY
       header={"What is the interview going to be about"}
       buttonCallback={nextPageHandler}
       buttonText={"Start interview"}
       isLoading={isLoading}
     >
       <Box
-        sx={{ cursor: "grab", userSelect: "none" }}
         overflow={"hidden"}
+        sx={{ cursor: "grab", userSelect: "none" }}
         position={"relative"}
         height={200}
       >
@@ -104,7 +105,7 @@ export const PreparePage = () => {
       <Typography color={"cornflowerblue"} mt={4} mb={1} fontWeight={700}>
         Common description:
       </Typography>
-      <Typography>{description}</Typography>
+      <Typography whiteSpace={"break-spaces"}>{description}</Typography>
     </PageLayout>
   );
 };

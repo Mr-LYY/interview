@@ -6,6 +6,7 @@ import { CandidateContext } from "../../App";
 
 export const CandidateCard = ({
   name,
+  photo = "",
   id,
   stack,
   isInterviewed = false,
@@ -42,7 +43,11 @@ export const CandidateCard = ({
         justifyContent={"space-between"}
         alignItems={"center"}
       >
-        <Avatar variant={"square"} sx={{ width: 80, height: 80, mb: 0.7 }} />
+        <Avatar
+          src={photo}
+          variant={"square"}
+          sx={{ width: 80, height: 80, mb: 0.7 }}
+        />
         <Box>
           <Typography fontWeight={700} align={"right"}>
             {name.split(" ")[0]}
