@@ -50,7 +50,11 @@ export const Appbar = () => {
     <Box sx={{ flexGrow: 1 }}>
       <Drawer anchor={"right"} open={isDrawerOpen} onClose={toggleDrawer}>
         <Box sx={{ width: 400, padding: "8px 16px" }}>
-          <Box display={"flex"} alignItems={"center"}>
+          <Box
+            display={"flex"}
+            alignItems={"center"}
+            borderBottom={"1px solid cornflowerblue"}
+          >
             <Typography color={"cornflowerblue"} variant={"h6"} paddingLeft={2}>
               {isAuthorized ? "Personal info" : "Sign in"}
             </Typography>
@@ -62,7 +66,7 @@ export const Appbar = () => {
               onClick={toggleDrawer}
               sx={{ marginLeft: "auto" }}
             >
-              <CloseIcon />
+              <CloseIcon sx={{ fill: "cornflowerblue" }} />
             </IconButton>
           </Box>
           {isAuthorized ? <LogoutForm /> : <LoginForm />}
@@ -82,10 +86,19 @@ export const Appbar = () => {
               alignItems={"center"}
               display={"flex"}
             >
-              <Typography mr={1}>
-                {interviewer?.name || "Interviewer"}
-              </Typography>
-              <Avatar src={interviewer?.photo || ""} />
+              <Box
+                justifyContent={"end"}
+                mr={1}
+                display={"flex"}
+                alignItems={"flex-end"}
+                flexDirection={"column"}
+              >
+                <Typography>{interviewer?.name || "Interviewer"}</Typography>
+                <Typography variant={"caption"}>
+                  {interviewer?.email || ""}
+                </Typography>
+              </Box>
+              <Avatar variant={"square"} src={interviewer?.photo || ""} />
             </Box>
           ) : (
             <Button
