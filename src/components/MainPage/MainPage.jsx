@@ -25,6 +25,7 @@ export const MainPage = () => {
       .then((r) => {
         if (r.status === 401) {
           sessionStorage.removeItem("token");
+          sessionStorage.removeItem("candidateId");
           setIsAuthorized(false);
         }
 

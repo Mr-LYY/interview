@@ -28,7 +28,11 @@ export const QuestionsPage = () => {
 
   const nextQuestionHandler = (shouldLoading = true) => {
     shouldLoading && setIsLoading(true);
-    makeCustomFetch(`candidates/${candidateId}/questions/next`)
+    makeCustomFetch(
+      `candidates/${
+        candidateId || sessionStorage.getItem("candidateId")
+      }/questions/next`
+    )
       .then((r) => {
         if (r.status === 401) {
           setIsAuthorized(false);
@@ -51,7 +55,9 @@ export const QuestionsPage = () => {
 
   const topicAnswerHandler = () => {
     makeCustomFetch(
-      `candidates/${candidateId}/topics/${questionData?.id}/score`,
+      `candidates/${
+        candidateId || sessionStorage.getItem("candidateId")
+      }/topics/${questionData?.id}/score`,
       "POST",
       { score }
     )
@@ -61,7 +67,9 @@ export const QuestionsPage = () => {
 
   const questionAnswerHandler = () => {
     makeCustomFetch(
-      `candidates/${candidateId}/questions/${questionData?.id}/score`,
+      `candidates/${
+        candidateId || sessionStorage.getItem("candidateId")
+      }/questions/${questionData?.id}/score`,
       "POST",
       { score }
     )

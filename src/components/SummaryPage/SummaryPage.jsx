@@ -20,10 +20,15 @@ export const SummaryPage = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    makeCustomFetch(`candidates/${candidateId}/summary`)
+    makeCustomFetch(
+      `candidates/${
+        candidateId || sessionStorage.getItem("candidateId")
+      }/summary`
+    )
       .then((r) => {
         if (r.status === 401) {
           sessionStorage.removeItem("token");
+          sessionStorage.removeItem("candidateId");
           setIsAuthorized(false);
         }
 

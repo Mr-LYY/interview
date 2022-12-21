@@ -11,7 +11,6 @@ export const LogoutForm = () => {
   const navigate = useNavigate();
   const { setIsAuthorized } = useContext(AuthContext);
   const { interviewer } = useContext(InterviewerContext);
-  const { name = "Interviewer", photo = "", email = "" } = interviewer;
 
   const handleLogout = () => {
     fetch(`${BASE_URL}/api/tokens`, {
@@ -26,11 +25,13 @@ export const LogoutForm = () => {
       .then((r) => {
         if (r.status === 401) {
           sessionStorage.removeItem("token");
+          sessionStorage.removeItem("candidateId");
           setIsAuthorized(false);
         }
 
         if (r.ok) {
           sessionStorage.removeItem("token");
+          sessionStorage.removeItem("candidateId");
           setIsAuthorized(false);
           navigate("/");
         }
@@ -56,12 +57,12 @@ export const LogoutForm = () => {
         <Avatar
           variant={"square"}
           sx={{ width: 100, height: 100 }}
-          src={photo}
+          src={interviewer?.photo || ""}
         />
         <Box display={"flex"} flexDirection={"column"} alignItems={"flex-end"}>
           <Typography align={"right"}>SirenGroup</Typography>
           <Typography sx={{ lineHeight: 1 }} variant={"h4"}>
-            {name}
+            {interviewer?.name || "Interviewer"}
           </Typography>
           <Typography
             sx={{ lineHeight: 1 }}
@@ -69,7 +70,7 @@ export const LogoutForm = () => {
             variant={"caption"}
             mt={1}
           >
-            {email}
+            {interviewer?.email || ""}
           </Typography>
         </Box>
       </Box>

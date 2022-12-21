@@ -15,7 +15,7 @@ import { Pagination } from "swiper";
 import { AuthContext, CandidateContext } from "../../App";
 
 export const PreparePage = () => {
-  const { setIsAuthorized } = useContext(AuthContext);
+  const { isAuthorized, setIsAuthorized } = useContext(AuthContext);
   const { candidateId } = useContext(CandidateContext);
   const [description, setDescription] = useState("");
   const [topics, setTopics] = useState([]);
@@ -24,10 +24,15 @@ export const PreparePage = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    makeCustomFetch(`candidates/${candidateId}/topics`)
+    makeCustomFetch(
+      `candidates/${
+        candidateId || sessionStorage.getItem("candidateId")
+      }/topics`
+    )
       .then((r) => {
         if (r.status === 401) {
           sessionStorage.removeItem("token");
+          sessionStorage.removeItem("candidateId");
           setIsAuthorized(false);
         }
 
@@ -39,7 +44,7 @@ export const PreparePage = () => {
       })
       .catch((e) => console.log(e))
       .finally(() => setIsLoading(false));
-  }, [setIsAuthorized]);
+  }, [isAuthorized]);
 
   const nextPageHandler = () => {
     navigate("/questions");

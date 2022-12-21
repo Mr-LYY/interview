@@ -15,6 +15,7 @@ export const CandidateCard = ({
   const { candidateId, setCandidateId } = useContext(CandidateContext);
   const chooseCandidate = ({ currentTarget }) => {
     if (currentTarget.id) {
+      sessionStorage.setItem("candidateId", currentTarget.id);
       setCandidateId(currentTarget.id);
     }
   };

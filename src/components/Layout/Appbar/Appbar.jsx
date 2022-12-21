@@ -18,7 +18,6 @@ import { makeCustomFetch } from "../../../utils";
 export const Appbar = () => {
   const { isAuthorized, setIsAuthorized } = useContext(AuthContext);
   const { interviewer, setInterviewer } = useContext(InterviewerContext);
-  const { name = "Interviewer", photo = "", email = "" } = interviewer;
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
 
   useEffect(() => {
@@ -83,8 +82,10 @@ export const Appbar = () => {
               alignItems={"center"}
               display={"flex"}
             >
-              <Typography mr={1}>{name}</Typography>
-              <Avatar src={photo} />
+              <Typography mr={1}>
+                {interviewer?.name || "Interviewer"}
+              </Typography>
+              <Avatar src={interviewer?.photo || ""} />
             </Box>
           ) : (
             <Button
