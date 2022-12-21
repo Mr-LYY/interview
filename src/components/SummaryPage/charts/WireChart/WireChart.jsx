@@ -12,11 +12,13 @@ export const WireChart = ({ data }) => {
       localData = Object.entries(data);
     }
 
-    return localData.map((item) => ({
-      subject: item[0],
-      A: +item[1].actual,
-      fullMark: 100,
-    }));
+    return localData
+      .map((item) => ({
+        subject: item[0],
+        A: +item[1].actual,
+        fullMark: 100,
+      }))
+      .filter((x) => x.subject !== "overall");
   }
 
   return (

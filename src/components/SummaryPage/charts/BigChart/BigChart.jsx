@@ -19,12 +19,14 @@ export const BigChart = ({ data }) => {
       localData = Object.entries(data);
     }
 
-    return localData.map((item) => ({
-      name: item[0],
-      uv: item[1].actual,
-      pv: 0,
-      amt: 0,
-    }));
+    return localData
+      .map((item) => ({
+        name: item[0],
+        uv: item[1].actual,
+        pv: 0,
+        amt: 0,
+      }))
+      .filter((x) => x.name !== "overall");
   }
 
   return (

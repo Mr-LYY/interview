@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import SentimentVeryDissatisfiedRoundedIcon from "@mui/icons-material/SentimentVeryDissatisfiedRounded";
 import SentimentDissatisfiedRoundedIcon from "@mui/icons-material/SentimentDissatisfiedRounded";
@@ -89,9 +89,22 @@ const answersArrNames = [
   },
 ];
 
-export const SmileAnswers = ({ setScore }) => {
+export const SmileAnswers = ({ setScore, data }) => {
   const [helperText, setHelperText] = useState("");
+  const [hints, setHints] = useState([]);
   const [backgroundColor, setBackgroundColor] = useState("");
+
+  const prepareHints = (allData) => {
+    if (!allData) return;
+    return Object.entries(allData)
+      .filter((key) => key[0].includes("hint"))
+      .map((item) => item[1]);
+  };
+
+  useEffect(() => {
+    if (!data) return;
+    setHints(prepareHints(data));
+  }, [data]);
 
   const onMouseOver = useCallback(({ currentTarget }) => {
     setHelperText(currentTarget?.name);
@@ -120,11 +133,11 @@ export const SmileAnswers = ({ setScore }) => {
         display={"flex"}
         justifyContent={"center"}
       >
-        {answersArrNames.map((button) => {
+        {answersArrNames.map((button, index) => {
           return (
             <AnswerButton
               key={button.text}
-              name={button.text}
+              name={hints[index] || button.text}
               value={button.value}
               onClick={onClick}
               backgroundColor={backgroundColor}
@@ -136,18 +149,25 @@ export const SmileAnswers = ({ setScore }) => {
           );
         })}
       </Box>
-      <Typography
-        variant={"h6"}
-        sx={{
-          position: "absolute",
-          bottom: 10,
-          width: "100%",
-          textAlign: "center",
-          color: "#44444460",
-        }}
-      >
-        {helperText}
-      </Typography>
+      <Box ml={8} justifyContent={"center"} display={"flex"}>
+        <Typography
+          variant={"h6"}
+          align={"center"}
+          sx={{
+            position: "absolute",
+            display: "block",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            bottom: 10,
+            width: 500,
+            textAlign: "center",
+            color: "#44444460",
+          }}
+        >
+          {helperText}
+        </Typography>
+      </Box>
     </>
   );
 };

@@ -124,7 +124,7 @@ export const QuestionsPage = () => {
         <b>Description</b>: {questionData?.description}
       </Typography>
       <Timer totalTime={questionData?.time} />
-      <SmileAnswers setScore={setScore} />
+      <SmileAnswers data={questionData} setScore={setScore} />
 
       <Dialog open={isWaiting}>
         <DialogContent>
